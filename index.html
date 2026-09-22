@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>「留客王」会员运营落地系统</title>
+<meta name="description" content="「留客王」会员运营体系，让你的头回客变成回头客">
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js" integrity="sha384-en/ztfPSRkGfME4KIm05joYXynqzUgbsG5nMrj/xEFAHXkeZfO3yMK8QQ+mP7p1/" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- ======================= 视图：欢迎页 ======================= -->
+<div id="view-landing" class="view">
+  <header class="landing-head">
+    <div class="hero">
+      <img class="hero-logo" src="assets/logo-hero.png" alt="留客王 Logo">
+      <h1 class="hero-title">「留客王」会员运营体系，<br>让你的头回客变成回头客</h1>
+      <p class="hero-sub">5分钟填写门店信息，一键生成可落地的<strong>会员运营方案书</strong> + <strong>执行SOP手册</strong> + <strong>效果评估工具包</strong></p>
+      <div class="hero-actions">
+        <button class="btn btn-primary btn-lg" id="btn-start">立即开始，免费生成方案</button>
+        <button class="btn btn-ghost btn-lg" id="btn-guide-landing">💡 3分钟上手指南</button>
+      </div>
+      <p class="hero-trust">基于《持续成交：让生意10倍增长的会员制》方法论体系 · 餐饮 / 美业 / 零售 / 教培 通用</p>
+    </div>
+    <div class="landing-cards">
+      <div class="lc-card">
+        <span class="lc-num">01</span>
+        <h3>填信息</h3>
+        <p>行业、客单价、毛利率，3分钟填完</p>
+      </div>
+      <div class="lc-card">
+        <span class="lc-num">02</span>
+        <h3>选策略</h3>
+        <p>储值门槛、折扣、积分，推荐值一键采纳</p>
+      </div>
+      <div class="lc-card">
+        <span class="lc-num">03</span>
+        <h3>下报告</h3>
+        <p>方案书 + SOP + 评估工具，一键下载</p>
+      </div>
+    </div>
+  </header>
+</div>
+
+<!-- ======================= 视图：向导表单 ======================= -->
+<div id="view-form" class="view hidden">
+  <header class="form-head">
+    <div class="form-head-inner">
+      <img class="mini-logo" src="assets/logo.png" alt="留客王">
+      <div class="form-title">「留客王」会员运营方案生成</div>
+      <button class="btn btn-ghost btn-sm" id="btn-guide-form">💡 3分钟上手指南</button>
+    </div>
+  </header>
+
+  <div class="form-body">
+    <div class="steps-bar" id="steps-bar">
+      <div class="step-node active" data-step="1"><span class="step-dot">1</span><label>基础信息</label></div>
+      <div class="step-line"></div>
+      <div class="step-node" data-step="2"><span class="step-dot">2</span><label>客户与产品</label></div>
+      <div class="step-line"></div>
+      <div class="step-node" data-step="3"><span class="step-dot">3</span><label>策略系数</label></div>
+      <div class="step-line"></div>
+      <div class="step-node" data-step="4"><span class="step-dot">4</span><label>确认生成</label></div>
+    </div>
+
+    <!-- Step 1 基础信息 -->
+    <section class="form-step active" id="step-1">
+      <div class="card">
+        <h2 class="card-title">门店基础信息</h2>
+        <div class="field">
+          <label class="f-label">行业大类 <em>*</em></label>
+          <select id="f-industry">
+            <option value="">请选择行业</option>
+            <option value="餐饮服务">餐饮服务（茶馆/咖啡/餐厅/饮品）</option>
+            <option value="零售门店">零售门店（超市/便利店/专卖店）</option>
+            <option value="休闲娱乐">休闲娱乐（美发美容/足浴/健身/KTV）</option>
+            <option value="教育培训">教育培训（机构/课程/私教）</option>
+            <option value="专业技术服务">专业技术服务（维修/咨询/设计）</option>
+            <option value="线上电商">线上电商 / 内容付费</option>
+            <option value="其他服务业">其他服务业</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="f-label">具体业态</label>
+          <input type="text" id="f-format" placeholder="如：连锁茶馆、社区超市、美容院">
+        </div>
+        <div class="field">
+          <label class="f-label">品牌名称</label>
+          <input type="text" id="f-brand" placeholder="如：老王家的牛肉面（用于会员卡命名）">
+        </div>
+        <div class="field">
+          <label class="f-label">经营规模</label>
+          <div class="chip-group" id="f-scale">
+            <button type="button" class="chip" data-v="单店">单店</button>
+            <button type="button" class="chip" data-v="连锁2-5家">连锁2-5家</button>
+            <button type="button" class="chip" data-v="连锁5家以上">连锁5家以上</button>
+            <button type="button" class="chip" data-v="线上+线下结合">线上+线下结合</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="f-label">月营业额</label>
+          <select id="f-revenue">
+            <option value="">请选择区间</option>
+            <option value="15000">3万元以下</option>
+            <option value="55000">3-8万元</option>
+            <option value="115000">8-15万元</option>
+            <option value="225000">15-30万元</option>
+            <option value="400000">30万元以上</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="f-label">主要获客渠道 <span class="f-multi">可多选</span></label>
+          <div class="chip-group" id="f-channels">
+            <button type="button" class="chip" data-v="到店自然流量">到店自然流量</button>
+            <button type="button" class="chip" data-v="平台引流(美团抖音)">平台引流(美团抖音)</button>
+            <button type="button" class="chip" data-v="私域社群">私域社群</button>
+            <button type="button" class="chip" data-v="地推活动">地推活动</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="f-label">目前会员情况</label>
+          <select id="f-membernow">
+            <option value="无会员制">无会员制</option>
+            <option value="简单积分">简单积分</option>
+            <option value="储值卡">储值卡</option>
+            <option value="完整体系">完整会员体系</option>
+          </select>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-primary" id="btn-step-next-1">下一步：客户与产品</button>
+      </div>
+    </section>
+
+    <!-- Step 2 客户与产品 -->
+    <section class="form-step" id="step-2">
+      <div class="card">
+        <h2 class="card-title">客户消费数据</h2>
+        <div class="field">
+          <label class="f-label">平均客单价（元）<em>*</em></label>
+          <input type="number" id="f-avgticket" min="1" max="100000" placeholder="如：100" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label class="f-label">典型客户消费频次</label>
+          <select id="f-freq">
+            <option value="20">每天</option>
+            <option value="10">每周2-3次</option>
+            <option value="4">每周1次</option>
+            <option value="3">每月2-4次</option>
+            <option value="1">每月1次</option>
+            <option value="0.3">每季度1次</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="f-label">综合毛利率（%）<em>*</em></label>
+          <input type="number" id="f-margin" min="1" max="95" placeholder="如：65" inputmode="decimal">
+          <p class="f-hint">毛利率决定折扣让利空间与储值方案建议</p>
+        </div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">核心产品 / 服务清单</h2>
+        <p class="f-hint">填写2-5个核心产品或服务，用于赠品设计与客户画像分析</p>
+        <div id="prod-list"></div>
+        <button class="btn btn-ghost btn-sm" id="btn-add-prod">+ 添加一行</button>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" id="btn-step-prev-2">上一步</button>
+        <button class="btn btn-primary" id="btn-step-next-2">下一步：策略系数</button>
+      </div>
+    </section>
+
+    <!-- Step 3 策略系数 -->
+    <section class="form-step" id="step-3">
+      <div class="coeff-intro card">
+        <h2 class="card-title">策略系数：基础值 × 系数（推荐值已高亮）</h2>
+        <p class="f-hint">每个系数都有行业验证的推荐值，可直接采纳；选择后实时预览计算结果。</p>
+      </div>
+      <div id="coeff-list"></div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" id="btn-step-prev-3">上一步</button>
+        <button class="btn btn-primary" id="btn-step-next-3">下一步：确认信息</button>
+      </div>
+    </section>
+
+    <!-- Step 4 确认生成 -->
+    <section class="form-step" id="step-4">
+      <div class="card">
+        <h2 class="card-title">经营目标与资源</h2>
+        <div class="field">
+          <label class="f-label">希望通过会员制实现 <span class="f-multi">可多选</span></label>
+          <div class="chip-group" id="f-goals">
+            <button type="button" class="chip" data-v="增收现金流">增收现金流</button>
+            <button type="button" class="chip" data-v="锁定老客复购">锁定老客复购</button>
+            <button type="button" class="chip" data-v="品牌建设">品牌建设</button>
+            <button type="button" class="chip" data-v="新客引流">新客引流</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="f-label">每月可投入营销预算</label>
+          <select id="f-budget">
+            <option value="1000">1000元以下</option>
+            <option value="3000">1000-5000元</option>
+            <option value="8000">5000-10000元</option>
+            <option value="20000">1万-3万元</option>
+            <option value="50000">3万元以上</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="f-label">团队规模</label>
+          <select id="f-team">
+            <option value="3">1-3人</option>
+            <option value="8">4-10人</option>
+            <option value="20">11-30人</option>
+            <option value="50">30人以上</option>
+          </select>
+        </div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">方案预览</h2>
+        <div id="summary-preview" class="summary-preview"></div>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" id="btn-step-prev-4">上一步</button>
+        <button class="btn btn-primary btn-lg" id="btn-generate">🎯 立即生成方案</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ======================= 视图：方案结果 ======================= -->
+<div id="view-result" class="view hidden">
+  <header class="result-head">
+    <div class="result-head-inner">
+      <img class="mini-logo" src="assets/logo.png" alt="留客王">
+      <div>
+        <div class="result-brand">「留客王」会员运营落地系统</div>
+        <div class="result-unlocked">已解锁 · 方案已生成</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="btn-guide-result">💡 3分钟上手指南</button>
+    </div>
+  </header>
+  <div class="result-body">
+    <div class="result-hero">
+      <h1>您的专属会员运营方案已就绪</h1>
+      <p id="result-brand-line"></p>
+    </div>
+    <div id="result-content"></div>
+    <div class="card download-card">
+      <h2 class="card-title">📥 下载您的落地大礼包</h2>
+      <div class="dl-group">
+        <div class="dl-item">
+          <div class="dl-info"><strong>📊 定制化会员运营方案书</strong><span>储值、折扣、裂变全套参数与财务测算</span></div>
+          <div class="dl-btns">
+            <button class="btn btn-primary btn-sm" id="dl-plan-live">生成并下载PDF</button>
+            <button class="btn btn-ghost btn-sm" id="btn-preview-plan">预览方案书</button>
+            <button class="btn btn-ghost btn-sm dl-sample" data-file="sample-plan.pdf" data-name="定制化会员运营方案书_样例.pdf">模拟下载样例</button>
+          </div>
+        </div>
+        <div class="dl-item">
+          <div class="dl-info"><strong>📋 店长/员工落地执行SOP手册</strong><span>话术、动作、考核标准，员工直接照做</span></div>
+          <div class="dl-btns">
+            <button class="btn btn-primary btn-sm" id="dl-sop-live">生成并下载PDF</button>
+            <button class="btn btn-ghost btn-sm dl-sample" data-file="sample-sop.pdf" data-name="店长员工落地执行SOP手册_样例.pdf">模拟下载样例</button>
+          </div>
+        </div>
+        <div class="dl-item">
+          <div class="dl-info"><strong>📈 会员运营效果评估工具包</strong><span>盯紧数据，随时调整策略</span></div>
+          <div class="dl-btns">
+            <button class="btn btn-primary btn-sm" id="dl-kit-live">生成并下载PDF</button>
+            <button class="btn btn-ghost btn-sm dl-sample" data-file="sample-kit.pdf" data-name="会员运营效果评估工具包_样例.pdf">模拟下载样例</button>
+          </div>
+        </div>
+      </div>
+      <div class="dl-gifts">
+        <div class="dl-item">
+          <div class="dl-info"><strong>🎁 留客王会员运营心法实操秘籍</strong><span>独家赠送（58页精华PDF · 测试版提供样例）</span></div>
+          <div class="dl-btns">
+            <button class="btn btn-ghost btn-sm dl-sample" data-file="sample-mind.pdf" data-name="留客王会员运营心法实操秘籍_样例.pdf">下载PDF</button>
+          </div>
+        </div>
+        <div class="dl-item">
+          <div class="dl-info"><strong>🛡️ 留客王会员运营避坑秘籍</strong><span>独家赠送（26页防坑PDF · 测试版提供样例）</span></div>
+          <div class="dl-btns">
+            <button class="btn btn-ghost btn-sm dl-sample" data-file="sample-pitfall.pdf" data-name="留客王会员运营避坑秘籍_样例.pdf">下载PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="dl-note">提示：若“生成并下载PDF”无反应（可能处于离线环境），请使用右侧“模拟下载样例”，体验完整闭环。</div>
+    </div>
+    <div class="card group-card">
+      <h2 class="card-title">🤝 邀请加入「留客王·实体老板实战交流群」</h2>
+      <p>与优秀同行抱团取暖，交流会员运营落地心得。添加专属顾问微信，备注“留客王”即可入群。</p>
+      <div class="wechat-row">
+        <span class="wechat-id" id="wechat-id-text">oujing1698</span>
+        <button class="btn btn-gold btn-sm" id="btn-copy-wechat">复制顾问微信号</button>
+      </div>
+    </div>
+    <div class="result-actions">
+      <button class="btn btn-ghost" id="btn-remake">重新填写信息</button>
+      <button class="btn btn-ghost" id="btn-back-home">返回首页</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= 新手引导弹窗 ======================= -->
+<div class="modal-mask hidden" id="guide-modal">
+  <div class="modal guide-modal">
+    <button class="modal-close" id="guide-close" aria-label="关闭">×</button>
+    <h2 class="modal-title">🎯 3分钟上手指南</h2>
+    <p class="modal-sub">三步搞定你的会员运营方案</p>
+    <div class="guide-steps" id="guide-steps">
+      <div class="gstep active"><span class="gstep-dot">1</span>填信息</div>
+      <div class="gstep-line"></div>
+      <div class="gstep"><span class="gstep-dot">2</span>解锁</div>
+      <div class="gstep-line"></div>
+      <div class="gstep"><span class="gstep-dot">3</span>下报告</div>
+    </div>
+    <div class="guide-stage" id="guide-stage"></div>
+    <div class="guide-nav">
+      <button class="btn btn-ghost" id="guide-prev">上一步</button>
+      <button class="btn btn-primary" id="guide-next">下一步</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= 价值塑造与解锁弹窗 ======================= -->
+<div class="modal-mask hidden" id="unlock-modal">
+  <div class="modal unlock-modal">
+    <button class="modal-close" id="unlock-close" aria-label="关闭">×</button>
+    <div class="unlock-head">
+      <div class="gift-ico" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="52" height="52">
+          <rect x="10" y="24" width="44" height="32" rx="4" fill="#E8A33D"/>
+          <rect x="10" y="24" width="44" height="12" rx="4" fill="#F2C26B"/>
+          <path d="M32 24v32" stroke="#B9772A" stroke-width="3"/>
+          <circle cx="32" cy="12" r="9" fill="#DF7739"/>
+          <path d="M23 12c-4-2-8 1-8 5s4 4 8 2M41 12c4-2 8 1 8 5s-4 4-8 2" stroke="#DF7739" stroke-width="3" fill="none"/>
+          <rect x="14" y="30" width="12" height="20" rx="2" fill="#103050"/>
+          <rect x="38" y="30" width="12" height="20" rx="2" fill="#103050"/>
+        </svg>
+      </div>
+      <h2 class="modal-title">您的落地大礼包已备好</h2>
+      <p class="unlock-top">老板您好！为了确保方案能真正在您的门店落地，我们的系统已为您深度演算了专属数据。由于生成深度报告和人工审核需要消耗服务器与专家资源，本系统采用「单次解锁制」。请查阅为您准备的落地大礼包：</p>
+    </div>
+    <div class="unlock-benefits">
+      <div class="benefit">
+        <div class="benefit-tag">权益1 · 系统生成文件</div>
+        <div class="benefit-items">
+          <div>📊 <strong>《定制化会员运营方案书》</strong> —— 包含储值、折扣、裂变的全套参数与财务测算。</div>
+          <div>📋 <strong>《店长/员工落地执行SOP手册》</strong> —— 话术、动作、考核标准，让员工直接照做。</div>
+          <div>📈 <strong>《会员运营效果评估工具包》</strong> —— 帮您盯紧数据，随时调整策略。</div>
+        </div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-tag">权益2 · 赠送资料</div>
+        <div class="benefit-items"><div>🎁 独家赠送《留客王会员运营心法实操秘籍》（58页精华PDF）</div></div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-tag">权益3 · 赠送资料</div>
+        <div class="benefit-items"><div>🛡️ 独家赠送《留客王会员运营避坑秘籍》（26页防坑PDF）</div></div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-tag">权益4 · 社群服务</div>
+        <div class="benefit-items"><div>🤝 邀请加入“留客王·实体老板实战交流群”，与优秀同行抱团取暖。</div></div>
+      </div>
+    </div>
+    <div class="unlock-steps">
+      <div class="ustep"><span class="ustep-num">Step 1</span>扫码添加「留客王」专属顾问微信。</div>
+      <div class="ustep"><span class="ustep-num">Step 2</span>支付单次解锁费用。</div>
+      <div class="ustep"><span class="ustep-num">Step 3</span>获取6位数「专属解锁密码」，填入下方输入框，一键生成并下载所有文件！</div>
+    </div>
+    <div class="unlock-foot">
+      <div class="wechat-row">
+        <span class="wechat-id">oujing1698</span>
+        <button class="btn btn-gold btn-sm" id="unlock-copy-wechat">复制顾问微信号</button>
+      </div>
+      <div class="pwd-row">
+        <input type="text" id="unlock-pwd" inputmode="numeric" maxlength="6" placeholder="请输入6位解锁密码" autocomplete="off">
+        <button class="btn btn-primary" id="unlock-confirm">确认解锁</button>
+      </div>
+      <p class="pwd-hint">🛠️ 当前为内测体验版，请输入任意6位数字即可解锁</p>
+      <p class="pwd-error" id="pwd-error"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= 方案书预览弹窗 ======================= -->
+<div class="modal-mask hidden" id="report-modal">
+  <div class="modal report-modal">
+    <button class="modal-close" id="report-close" aria-label="关闭">×</button>
+    <h2 class="modal-title" id="report-modal-title">方案书预览</h2>
+    <div class="report-scroll" id="report-scroll"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ======================= PDF 页眉条（用于生成PDF时逐页绘制） ======================= -->
+<div id="pdf-header-strip" class="pdf-header-strip">
+  <img src="data:image/png;base64,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" alt="">
+  <div class="pdf-header-text">
+    <div class="pdf-header-title" id="pdf-header-title">定制化会员运营方案书</div>
+    <div class="pdf-header-sub">「留客王」会员运营落地系统 · LIUKE WANG MEMBER OPERATION SYSTEM</div>
+  </div>
+  <div class="pdf-header-gold"></div>
+</div>
+
+<!-- ======================= 隐藏的A4报告容器（用于生成PDF） ======================= -->
+<div id="pdf-report-plan" class="pdf-report hidden"></div>
+<div id="pdf-report-sop" class="pdf-report hidden"></div>
+<div id="pdf-report-kit" class="pdf-report hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
