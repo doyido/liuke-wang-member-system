@@ -8,6 +8,7 @@
 var WECHAT_ID = 'oujing1698';
 var STORE_KEY = 'lkw_member_data_v2';
 var UNLOCK_KEY = 'lkw_unlocked_v2';
+// Logo now rendered as inline SVG below (see LOGO_SVG)
 
 /* ---------- 工具函数 ---------- */
 function $(id){ return document.getElementById(id); }
@@ -103,7 +104,10 @@ function openGuide(){
   renderGuide();
   openModal('guide-modal');
 }
-$('guide-close').addEventListener('click', function(){ closeModal('guide-modal'); });
+['guide-close','guide-modal'].forEach(function(id){
+  var el = $('guide-modal');
+  if (id === 'guide-close') $('guide-close').addEventListener('click', function(){ closeModal('guide-modal'); });
+});
 $('guide-modal').addEventListener('click', function(e){ if (e.target === this) closeModal('guide-modal'); });
 $('guide-prev').addEventListener('click', function(){ if (guideIdx > 1) { guideIdx--; renderGuide(); } });
 $('guide-next').addEventListener('click', function(){ if (guideIdx < 3) { guideIdx++; renderGuide(); } else { closeModal('guide-modal'); } });
@@ -269,6 +273,7 @@ function renderCoeffs(){
   });
   wrap.innerHTML = html;
 
+  // 事件绑定
   wrap.querySelectorAll('.coeff-opt').forEach(function(btn){
     btn.addEventListener('click', function(){
       var key = btn.dataset.key;
@@ -524,6 +529,7 @@ function renderResult(){
   $('result-brand-line').textContent = '为「' + p.brand + '」定制的会员运营方案 · 行业：' + p.industry + ' · 已按推荐系数生成';
   var html = '';
 
+  // 方案摘要
   html += '<h2 class="sec-title">方案摘要</h2><div class="card"><div class="kv-grid">';
   html += '<div class="kv-item"><div class="k">推荐会员类型</div><div class="v gold">' + p.type[0] + ' · ' + p.type[1] + '</div></div>';
   html += '<div class="kv-item"><div class="k">储值门槛</div><div class="v">' + money(p.d.storedThreshold) + ' 元</div></div>';
@@ -533,22 +539,26 @@ function renderResult(){
   html += '<div class="kv-item"><div class="k">每月推广预算</div><div class="v">' + money(p.promoBudget) + ' 元</div></div>';
   html += '</div><p style="font-size:13px;color:#5B6B7A;margin-top:12px">推荐理由：' + p.type[2] + '。</p></div>';
 
+  // 客户画像
   html += '<h2 class="sec-title">客户画像</h2><div class="card"><div class="profile-cards">';
   p.profiles.forEach(function(pr){
     html += '<div class="pcard"><span class="p-tag">' + pr.tag + '</span><div class="p-title">' + pr.title + '</div><div class="p-desc">' + pr.desc + '</div></div>';
   });
   html += '</div></div>';
 
+  // 七要素
   html += '<h2 class="sec-title">会员方案七要素</h2><div class="card"><div style="overflow-x:auto"><table class="tbl"><thead><tr><th style="width:56px">要素</th><th>配置</th><th>推荐值</th><th>设置理由</th></tr></thead><tbody>';
   p.seven.forEach(function(r){ html += '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td class="hl">' + r[2] + '</td><td>' + r[3] + '</td></tr>'; });
   html += '</tbody></table></div></div>';
 
+  // 财务测算
   html += '<h2 class="sec-title">储值方案与财务测算</h2><div class="card"><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>档位</th><th>储值金额</th><th>预估转化率</th><th>首月新增会员</th><th>预计带动现金流</th></tr></thead><tbody>';
   p.finance.forEach(function(r){
     html += '<tr><td>' + r.name + '</td><td class="hl">' + money(r.amt) + ' 元</td><td>' + Math.round(r.rate * 100) + '%</td><td>' + money(r.members) + ' 人</td><td>' + money(r.cash) + ' 元</td></tr>';
   });
   html += '</tbody></table></div><p style="font-size:12.5px;color:#8A97A5;margin-top:10px">测算口径：按月营业额 ' + money(p.d.revenue) + ' 元 ÷ 客单价 ' + money(p.d.avgTicket) + ' 元 ≈ 月 ' + money(p.d.monthlyOrders) + ' 笔有效订单估算。</p></div>';
 
+  // 一句话方案
   html += '<h2 class="sec-title">方案一句话总结</h2><div class="card"><p style="font-size:14.5px;color:#103050;font-weight:600">以「' + (p.type[0] === '积分式' ? '积分卡做大基数' : p.type[0] === '订阅式' ? '订阅卡锁定高频消费' : p.type[0] === '圈层式' ? '圈层卡锁定高价值客户' : '储值卡锁定现金流') + '」为核心，把门店的头回客变成回头客。</p></div>';
 
   $('result-content').innerHTML = html;
@@ -797,6 +807,6 @@ var LOGO_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">'+
 '<circle cx="48" cy="36" r="3" fill="#F2C26B"/><circle cx="60" cy="33" r="3.5" fill="#F2C26B"/><circle cx="72" cy="36" r="3" fill="#F2C26B"/>'+
 '<text x="60" y="78" text-anchor="middle" font-family="Microsoft YaHei,sans-serif" font-size="18" font-weight="bold" fill="#F2C26B">留客王</text>'+
 '<text x="60" y="95" text-anchor="middle" font-family="Microsoft YaHei,sans-serif" font-size="9" fill="#c8d6e5">LIU KE WANG</text></svg>';
-var LOGO_DATA_URI = 'data:image/svg+xml;base64,' + btoa(LOGO_SVG);
+var LOGO_DATA_URI = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(LOGO_SVG)));
 document.querySelectorAll('.hero-logo, .mini-logo').forEach(function(img){ img.src = LOGO_DATA_URI; });
 var fav = document.querySelector('link[rel="icon"]'); if (fav) fav.href = LOGO_DATA_URI;
